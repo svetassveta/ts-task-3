@@ -8,9 +8,25 @@
  */
 
 export class Currency{
+    public name: string;
+    public value: number;
+    public unit: string;
+    public type: CurrencyType;
 
+    constructor(name: string, value: number, unit: string, type?: CurrencyType) {
+        if (!name || !unit || value < 0) {
+            throw new Error('Invalid argument');
+        }
+        
+        this.name = name;
+        this.value = value;
+        this.unit = unit;
+        this.type = type;
+    }
 }
 
 export enum CurrencyType {
-
+    material,
+    cryptoCurrency,
+    metalDeposit
 }

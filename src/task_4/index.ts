@@ -10,15 +10,77 @@
 import { Currency } from "../task_1";
 import { ISecureVaultRequisites } from "../task_3";
 
-export class SmartContract implements IContract{
+abstract class Contract implements IContract {
+
+    id: number;
+    state: ContractState = ContractState.pending;
+    value: Currency;
+    sender: ISecureVaultRequisites;
+    receiver: ISecureVaultRequisites;
+
+    constructor(id:number,value: Currency, sender: ISecureVaultRequisites, receiver: ISecureVaultRequisites){
+        this.id = id;
+        this.value = value;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.state = ContractState.pending;
+    }
+
+    signAndTransfer(): void{
+        this.state = ContractState.transfer;
+    }
+
+    closeTransfer(): void{
+        this.state = ContractState.close;
+    }
+
+    rejectTransfer(): void{
+        this.state = ContractState.rejected;
+    }
+}
+
+export class BankingContract extends Contract {
+    constructor(id:number,value: Currency, sender: ISecureVaultRequisites, receiver: ISecureVaultRequisites){
+        super(id,value,sender,receiver);
+        this.state = ContractState.pending;
+    }
 
 }
 
-export class BankingContract implements IContract{
+export class SmartContract extends Contract {
+    constructor(id:number,value: Currency, sender: ISecureVaultRequisites, receiver: ISecureVaultRequisites){
+        super(id,value,sender,receiver);
+        this.state = ContractState.pending;
+    }
+
+    public closeTransfer() {
+        setTimeout(() => this.closeTransfer(), 3000);
+        super.closeTransfer();
+    }
+
+    public rejectTransfer(): void {
+        setTimeout(() => {
+            this.state = ContractState.rejected;
+        }, 3000)
+    }
 
 }
 
-export class LogisticContract implements IContract{
+export class LogisticContract extends Contract {
+    constructor(id:number,value: Currency, sender: ISecureVaultRequisites, receiver: ISecureVaultRequisites){
+        super(id,value,sender,receiver);
+        this.state = ContractState.pending;
+    }
+    public closeTransfer() {
+        setTimeout(() => this.closeTransfer(), 6000);
+        super.closeTransfer();
+    }
+
+    public rejectTransfer(): void {
+        setTimeout(() => {
+            this.state = ContractState.rejected;
+        }, 6000)
+    }
 
 }
 
